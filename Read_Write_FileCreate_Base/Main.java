@@ -10,9 +10,27 @@ import java.util.Scanner;
 
 class Main {
     public static void main(String[] args) {
+        String fileName = "defaultFile.txt";
+        
+        createFile(fileName);
+        
+        write(fileName, "Hello World!", 'w');   // overwrite file
+        
+        System.out.println(read(fileName));
+        
+        write(fileName, "Hello World 2!", 'a'); // append to file
+
+        System.out.println(read(fileName));
+
+        // deleteFile(fileName);
+    }// end main method
+
+    public static File createFile(String fileName) {
+        File file = new File(fileName);
+        
         // create file
         try {
-            File file = new File("data.txt");
+            // File file = new File(fileName);
             if (file.createNewFile()) {
                 System.out.println("File has been created");
             } // end if statement
@@ -21,62 +39,63 @@ class Main {
             } // end else statement
         } // end try
         catch (IOException error) {
-            System.out.println("An error has occured");
+            System.out.println("An error has occured creating or finding file");
         } // end catch
 
-        // write data to file (overwriting file)
-        try {
-            FileWriter addData = new FileWriter("data.txt");
-            addData.write("Hello World! \n");
-            addData.close();
-            System.out.println("Successfully written to file!");
-        } //end try
-        catch (IOException error) {
-            System.out.println("An error has occured!");
-        } // end catch
+        return file;
+    }//end createFile(fileName)
 
-        // read file and print to command line
+    public static String read(String fileName) {
+        // read file and put in String to command line
+        String data = "";
+
         try {
-            File file = new File("data.txt");
+            File file = new File(fileName);
             Scanner reader = new Scanner(file);
             while (reader.hasNextLine()) {
-                String data = reader.nextLine();
-                System.out.println(data);
+                data += reader.nextLine() + "\n";
             } // end while loop
             reader.close();
         } // end try
         catch (FileNotFoundException error) {
-            System.out.println("An error has occured!");
+            System.out.println("An error has occured reading data!");
         } // end catch
 
+        return data;
+    }//end read(fileName)
+
+    public static void write(String fileName, String data, char type) {
         // write to file (append to file)
         // read file and save to string
         String existing = "";
-        try {
-            File file = new File("data.txt");
-            Scanner reader = new Scanner(file);
-            while (reader.hasNextLine()) {
-                String data = reader.nextLine();
-                existing += data + "\n";
-            } // end while loop
-            reader.close();
-        } // end try
-        catch (FileNotFoundException error) {
-            System.out.println("An error has occured!");
-        } // end catch
+        
+        if(type == 'a') { //if write type is append=>'a' else overwrite=>'w'
+            existing = read(fileName);
+        }//end if statement
 
         // write file writing existing data and appending data
-        String appendingData = "Hi There";
         try {
-            FileWriter addData = new FileWriter("data.txt");
+            FileWriter addData = new FileWriter(fileName);
             addData.write(existing);
-            addData.write(appendingData);
+            addData.write(data);
             addData.close();
             System.out.println("Successfully written to file!");
         }//end try
         catch (IOException error) {
-            System.out.println("An error has occured!");
+            System.out.println("An error has occured writing to file!");
         } // end catch
-    }// end main method
+    }//end write(fileName, data, type)
+
+    public static void deleteFile(String fileName) {
+        File file = new File(fileName);
+
+        if (file.delete()) {
+            System.out.println("Deleted the file: " + file.getName());
+        }//end if statement
+        
+        else {
+            System.out.println("Failed to delete the file.");
+        }//end else statement
+    }//end deleteFile(fileName)
 
 }// end class Main
